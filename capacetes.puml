@@ -1,0 +1,307 @@
+```plantuml
+@startuml DiagramaDeClasses_Ecommerce_Capacetes
+
+' =========================================================
+' CONFIGURAÇÕES VISUAIS
+' =========================================================
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam monochrome false
+
+' =========================================================
+' ENUMERAÇÕES
+' =========================================================
+
+enum TipoUsuario {
+    ADMINISTRADOR
+    CLIENTE
+}
+
+enum Tamanho {
+    XS
+    S
+    M
+    L
+    XL
+    XXL
+}
+
+enum TipoFechamento {
+    DUPLO_D
+    MICROMETRICO
+    ENGATE_RAPIDO
+}
+
+enum StatusPedido {
+    AGUARDANDO_PAGAMENTO
+    PAGO
+    EM_TRANSPORTE
+    ENTREGUE
+    CANCELADO
+}
+
+enum MetodoPagamento {
+    CARTAO_CREDITO
+    PIX
+    BOLETO
+}
+
+enum StatusPagamento {
+    PENDENTE
+    APROVADO
+    REJEITADO
+}
+
+' =========================================================
+' CLASSES GEOGRÁFICAS
+' BASE DESENVOLVIDA PELO PROFESSOR
+' =========================================================
+
+class Regiao {
+    - id : Long
+    - nome : String
+    - sigla : String
+}
+
+class Estado {
+    - id : Long
+    - nome : String
+    - uf : String
+}
+
+class Municipio {
+    - id : Long
+    - nome : String
+}
+
+' =========================================================
+' PARTE 1 - ADMINISTRATIVA
+' DOMÍNIO DE CAPACETES
+' =========================================================
+
+' ---------------------------------------------------------
+' CLASSE ABSTRATA - HERANÇA
+' ---------------------------------------------------------
+
+abstract class Capacete {
+    - id : Long
+    - modelo : String
+    - preco : BigDecimal
+    - tamanho : Tamanho
+    - quantidadeEstoque : Integer
+    + atualizarEstoque(qtd : Integer) : Void
+}
+
+' ---------------------------------------------------------
+' ESPECIALIZAÇÕES DE CAPACETE
+' HERANÇA
+' ---------------------------------------------------------
+
+class CapaceteIntegral {
+    - possuiViseiraSolar : Boolean
+}
+
+class CapaceteAberto {
+    - possuiViseira : Boolean
+}
+
+class CapaceteOffRoad {
+    - possuiPala : Boolean
+}
+
+Capacete <|-- CapaceteIntegral
+Capacete <|-- CapaceteAberto
+Capacete <|-- CapaceteOffRoad
+
+' ---------------------------------------------------------
+' ENTIDADES ADMINISTRATIVAS
+' ---------------------------------------------------------
+
+class Marca {
+    - id : Long
+    - nome : String
+    - paisOrigem : String
+}
+
+class Categoria {
+    - id : Long
+    - nome : String
+    - descricao : String
+}
+
+class Material {
+    - id : Long
+    - nome : String
+    - descricao : String
+}
+
+class Cor {
+    - id : Long
+    - nome : String
+    - codigoHexadecimal : String
+}
+
+class Fornecedor {
+    - id : Long
+    - razaoSocial : String
+    - cnpj : String
+    - telefone : String
+}
+
+' ---------------------------------------------------------
+' COMPOSIÇÃO
+' ---------------------------------------------------------
+
+class EspecificacaoCapacete {
+    - id : Long
+    - peso : BigDecimal
+    - tipoFechamento : TipoFechamento
+    - possuiViseira : Boolean
+}
+
+' =========================================================
+' PARTE 2 - ACESSO AO SISTEMA / COMERCIAL
+' SERÁ IMPLEMENTADA NA A2
+' =========================================================
+
+' ---------------------------------------------------------
+' HERANÇA DE USUÁRIO - A2
+' ---------------------------------------------------------
+
+abstract class Usuario {
+    # id : Long
+    # nome : String
+    # email : String
+    # senha : String
+    # tipoUsuario : TipoUsuario
+    + autenticar(email : String, senha : String) : Boolean
+}
+
+class Administrador {
+    - matriculaFuncionario : String
+}
+
+class Cliente {
+    - cpf : String
+    - telefone : String
+    + realizarCompra() : Pedido
+}
+
+Usuario <|-- Administrador
+Usuario <|-- Cliente
+
+' ---------------------------------------------------------
+' ENDEREÇO - A2
+' ---------------------------------------------------------
+
+class Endereco {
+    - id : Long
+    - logradouro : String
+    - numero : String
+    - bairro : String
+    - cep : String
+}
+
+' ---------------------------------------------------------
+' PEDIDO - A2
+' ---------------------------------------------------------
+
+class ItemPedido {
+    - id : Long
+    - quantidade : Integer
+    - precoUnitario : BigDecimal
+    + calcularSubtotal() : BigDecimal
+}
+
+class Pedido {
+    - id : Long
+    - dataCriacao : LocalDateTime
+    - valorTotal : BigDecimal
+    - status : StatusPedido
+    + calcularTotal() : BigDecimal
+}
+
+' ---------------------------------------------------------
+' PAGAMENTO - A2
+' ---------------------------------------------------------
+
+class Pagamento {
+    - id : Long
+    - dataPagamento : LocalDateTime
+    - valor : BigDecimal
+    - metodo : MetodoPagamento
+    - status : StatusPagamento
+    + processarPagamento() : Boolean
+}
+
+' ---------------------------------------------------------
+' ENTREGA - A2
+' ---------------------------------------------------------
+
+class Entrega {
+    - id : Long
+    - codigoRastreio : String
+    - dataEnvio : LocalDate
+    - dataPrevisaoEntrega : LocalDate
+    - statusEnvio : String
+}
+
+' =========================================================
+' RELACIONAMENTOS GEOGRÁFICOS
+' =========================================================
+
+Regiao "1" *-- "1..*" Estado : contém
+
+Estado "1" *-- "1..*" Municipio : contém
+
+Endereco "*" o-- "1" Municipio : localizado em
+
+' =========================================================
+' RELACIONAMENTOS - PARTE 1
+' ADMINISTRATIVA / CAPACETES
+' =========================================================
+
+' ---------------------------------------------------------
+' AGREGAÇÕES
+' ---------------------------------------------------------
+
+Marca "1" o-- "0..*" Capacete : possui
+
+Categoria "1" o-- "0..*" Capacete : classifica
+
+Material "1" o-- "0..*" Capacete : utilizado em
+
+Cor "1" o-- "0..*" Capacete : possui
+
+' ---------------------------------------------------------
+' RELACIONAMENTO N:N
+' ---------------------------------------------------------
+
+Fornecedor "0..*" -- "0..*" Capacete : fornece
+
+' ---------------------------------------------------------
+' COMPOSIÇÃO
+' ---------------------------------------------------------
+
+Capacete "1" *-- "1" EspecificacaoCapacete : possui
+
+' =========================================================
+' RELACIONAMENTOS - PARTE 2 / A2
+' =========================================================
+
+Cliente "1" o-- "0..*" Endereco : possui
+
+Cliente "1" -- "0..*" Pedido : realiza
+
+Pedido "1" *-- "1..*" ItemPedido : contém
+
+ItemPedido "*" o-- "1" Capacete : refere-se a
+
+Pedido "1" *-- "1" Pagamento : possui
+
+Pedido "1" *-- "1" Entrega : possui
+
+Entrega "*" o-- "1" Endereco : destina-se a
+
+@enduml
