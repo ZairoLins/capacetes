@@ -157,7 +157,6 @@ class EspecificacaoCapacete {
     - id : Long
     - peso : BigDecimal
     - tipoFechamento : TipoFechamento
-    - possuiViseira : Boolean
 }
 
 ' =========================================================
