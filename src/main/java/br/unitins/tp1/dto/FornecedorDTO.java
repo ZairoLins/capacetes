@@ -1,5 +1,7 @@
 package br.unitins.tp1.dto;
 
+import org.hibernate.validator.constraints.br.CNPJ;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -10,6 +12,7 @@ public record FornecedorDTO(
     String razaoSocial,
     @NotBlank(message = "O CNPJ deve ser informado.")
     @Pattern(regexp = "^\\d{14}$", message = "O CNPJ deve conter 14 digitos numericos.")
+    @CNPJ(message = "CNPJ invalido.")
     String cnpj,
     @NotBlank(message = "O telefone deve ser informado.")
     @Pattern(regexp = "^\\d{10,11}$", message = "O telefone deve conter DDD e numero, apenas digitos.")

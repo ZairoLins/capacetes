@@ -37,8 +37,8 @@ insert into capaceteaberto (id, possuiviseira) values(2, true);
 insert into capacete (modelo, preco, idtamanho, quantidadeestoque, id_marca, id_categoria, id_material, id_cor, id_especificacao) values('Th1 Vision', 399.90, 3, 20, 3, 3, 2, 3, 3);
 insert into capaceteoffroad (id, possuipala) values(3, true);
 
-insert into fornecedor (razaosocial, cnpj, telefone) values('Moto Pecas Distribuidora Ltda', '12345678000190', '63999998888');
-insert into fornecedor (razaosocial, cnpj, telefone) values('Capacetes Brasil Importadora S.A.', '98765432000110', '11988887777');
+insert into fornecedor (razaosocial, cnpj, telefone) values('Moto Pecas Distribuidora Ltda', '12345678000195', '63999998888');
+insert into fornecedor (razaosocial, cnpj, telefone) values('Capacetes Brasil Importadora S.A.', '98765432000198', '11988887777');
 
 insert into capacete_fornecedor (id_capacete, id_fornecedor) values(1, 1);
 insert into capacete_fornecedor (id_capacete, id_fornecedor) values(1, 2);

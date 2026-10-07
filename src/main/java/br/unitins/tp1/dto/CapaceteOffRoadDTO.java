@@ -3,7 +3,9 @@ package br.unitins.tp1.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import br.unitins.tp1.validation.SemDuplicados;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +20,7 @@ public record CapaceteOffRoadDTO(
     String modelo,
     @NotNull(message = "O preco deve ser informado.")
     @Positive(message = "O preco deve ser maior que zero.")
+    @Digits(integer = 8, fraction = 2, message = "O preco deve ter no maximo 8 digitos inteiros e 2 casas decimais.")
     BigDecimal preco,
     @NotNull(message = "O tamanho deve ser informado.")
     @Min(value = 1, message = "Tamanho invalido.")
@@ -41,7 +44,8 @@ public record CapaceteOffRoadDTO(
     @NotNull(message = "A especificacao deve ser informada.")
     @Valid
     EspecificacaoCapaceteDTO especificacao,
-    List<Long> idFornecedores,
+    @SemDuplicados(message = "Os fornecedores nao podem se repetir.")
+    List<@NotNull(message = "O fornecedor deve ser informado.") @Positive(message = "Fornecedor invalido.") Long> idFornecedores,
     @NotNull(message = "Deve ser informado se possui pala.")
     Boolean possuiPala) {
 
