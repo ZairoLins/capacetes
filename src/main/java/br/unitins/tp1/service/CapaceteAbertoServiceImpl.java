@@ -2,10 +2,8 @@ package br.unitins.tp1.service;
 
 import java.util.List;
 
-import br.unitins.tp1.exception.ConflictException;
 import br.unitins.tp1.model.CapaceteAberto;
 import br.unitins.tp1.repository.CapaceteAbertoRepository;
-import br.unitins.tp1.repository.CapaceteRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,13 +15,9 @@ public class CapaceteAbertoServiceImpl implements CapaceteAbertoService {
     @Inject
     CapaceteAbertoRepository repository;
 
-    @Inject
-    CapaceteRepository capaceteRepository;
-
     @Override
     @Transactional
     public CapaceteAberto create(CapaceteAberto capaceteAberto) {
-        validar(capaceteAberto, null);
         repository.persist(capaceteAberto);
         return capaceteAberto;
     }
@@ -35,7 +29,6 @@ public class CapaceteAbertoServiceImpl implements CapaceteAbertoService {
         if (novoCapacete == null) {
             throw new NotFoundException("Capacete nao encontrado.");
         }
-        validar(capaceteAberto, id);
         novoCapacete.setModelo(capaceteAberto.getModelo());
         novoCapacete.setPreco(capaceteAberto.getPreco());
         novoCapacete.setTamanho(capaceteAberto.getTamanho());
@@ -59,15 +52,6 @@ public class CapaceteAbertoServiceImpl implements CapaceteAbertoService {
     public void delete(Long id) {
         if (!repository.deleteById(id)) {
             throw new NotFoundException("Capacete nao encontrado.");
-        }
-    }
-
-    private void validar(CapaceteAberto capaceteAberto, Long id) {
-        if (capaceteRepository.existsProduto(capaceteAberto, id)) {
-            throw new ConflictException("modelo", "Ja existe um capacete " + capaceteAberto.getModelo()
-                    + " da marca " + capaceteAberto.getMarca().getNome()
-                    + " no tamanho " + capaceteAberto.getTamanho().getNome()
-                    + " e cor " + capaceteAberto.getCor().getNome() + ".");
         }
     }
 

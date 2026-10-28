@@ -18,6 +18,7 @@ import br.unitins.tp1.service.MarcaService;
 import br.unitins.tp1.service.MaterialService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -68,70 +69,22 @@ public class CapaceteIntegralResource {
 
     @GET
     @Path("/search")
-    public Response buscarPorModelo(@QueryParam("modelo") String modelo) {
+    public Response buscarPorModelo(@NotBlank(message = "O parametro de busca deve ser informado.") @QueryParam("modelo") String modelo) {
         return Response.ok(service.findByModelo(modelo).stream().map(CapaceteIntegralResponseDTO::fromEntity).toList()).build();
     }
 
     @POST
     public Response inserir(@Valid CapaceteIntegralDTO dto) {
-        CapaceteIntegral capaceteIntegral = new CapaceteIntegral();
-        capaceteIntegral.setModelo(dto.modelo());
-        capaceteIntegral.setPreco(dto.preco());
-        capaceteIntegral.setTamanho(Tamanho.fromId(dto.idTamanho()));
-        capaceteIntegral.setQuantidadeEstoque(dto.quantidadeEstoque());
-        capaceteIntegral.setMarca(marcaService.findById(dto.idMarca()));
-        capaceteIntegral.setCategoria(categoriaService.findById(dto.idCategoria()));
-        capaceteIntegral.setMaterial(materialService.findById(dto.idMaterial()));
-        capaceteIntegral.setCor(corService.findById(dto.idCor()));
-
-        EspecificacaoCapacete especificacao = new EspecificacaoCapacete();
-        especificacao.setPeso(dto.especificacao().peso());
-        especificacao.setTipoFechamento(TipoFechamento.fromId(dto.especificacao().idTipoFechamento()));
-        capaceteIntegral.setEspecificacao(especificacao);
-
-        List<Fornecedor> fornecedores = new ArrayList<>();
-        if (dto.idFornecedores() != null) {
-            for (Long idFornecedor : dto.idFornecedores()) {
-                fornecedores.add(fornecedorService.findById(idFornecedor));
-            }
-        }
-        capaceteIntegral.setFornecedores(fornecedores);
-
-        capaceteIntegral.setPossuiViseiraSolar(dto.possuiViseiraSolar());
+        CapaceteIntegral capaceteIntegral = toEntity(dto);
         return Response.status(Response.Status.CREATED).entity(CapaceteIntegralResponseDTO.fromEntity(service.create(capaceteIntegral))).build();
     }
 
     @PUT
     @Path("/{id}")
     public Response atualizar(@PathParam("id") Long id, @Valid CapaceteIntegralDTO dto) {
-        CapaceteIntegral capaceteIntegral = new CapaceteIntegral();
-        capaceteIntegral.setModelo(dto.modelo());
-        capaceteIntegral.setPreco(dto.preco());
-        capaceteIntegral.setTamanho(Tamanho.fromId(dto.idTamanho()));
-        capaceteIntegral.setQuantidadeEstoque(dto.quantidadeEstoque());
-        capaceteIntegral.setMarca(marcaService.findById(dto.idMarca()));
-        capaceteIntegral.setCategoria(categoriaService.findById(dto.idCategoria()));
-        capaceteIntegral.setMaterial(materialService.findById(dto.idMaterial()));
-        capaceteIntegral.setCor(corService.findById(dto.idCor()));
-
-        EspecificacaoCapacete especificacao = new EspecificacaoCapacete();
-        especificacao.setPeso(dto.especificacao().peso());
-        especificacao.setTipoFechamento(TipoFechamento.fromId(dto.especificacao().idTipoFechamento()));
-        capaceteIntegral.setEspecificacao(especificacao);
-
-        List<Fornecedor> fornecedores = new ArrayList<>();
-        if (dto.idFornecedores() != null) {
-            for (Long idFornecedor : dto.idFornecedores()) {
-                fornecedores.add(fornecedorService.findById(idFornecedor));
-            }
-        }
-        capaceteIntegral.setFornecedores(fornecedores);
-
-        capaceteIntegral.setPossuiViseiraSolar(dto.possuiViseiraSolar());
-
+        CapaceteIntegral capaceteIntegral = toEntity(dto);
         service.update(id, capaceteIntegral);
         return Response.noContent().build();
-
     }
 
     @DELETE
@@ -139,6 +92,34 @@ public class CapaceteIntegralResource {
     public Response excluir(@PathParam("id") Long id) {
         service.delete(id);
         return Response.noContent().build();
+    }
+
+    private CapaceteIntegral toEntity(CapaceteIntegralDTO dto) {
+        CapaceteIntegral capaceteIntegral = new CapaceteIntegral();
+        capaceteIntegral.setModelo(dto.modelo());
+        capaceteIntegral.setPreco(dto.preco());
+        capaceteIntegral.setTamanho(Tamanho.fromId(dto.idTamanho()));
+        capaceteIntegral.setQuantidadeEstoque(dto.quantidadeEstoque());
+        capaceteIntegral.setMarca(marcaService.findById(dto.idMarca()));
+        capaceteIntegral.setCategoria(categoriaService.findById(dto.idCategoria()));
+        capaceteIntegral.setMaterial(materialService.findById(dto.idMaterial()));
+        capaceteIntegral.setCor(corService.findById(dto.idCor()));
+
+        EspecificacaoCapacete especificacao = new EspecificacaoCapacete();
+        especificacao.setPeso(dto.especificacao().peso());
+        especificacao.setTipoFechamento(TipoFechamento.fromId(dto.especificacao().idTipoFechamento()));
+        capaceteIntegral.setEspecificacao(especificacao);
+
+        List<Fornecedor> fornecedores = new ArrayList<>();
+        if (dto.idFornecedores() != null) {
+            for (Long idFornecedor : dto.idFornecedores()) {
+                fornecedores.add(fornecedorService.findById(idFornecedor));
+            }
+        }
+        capaceteIntegral.setFornecedores(fornecedores);
+
+        capaceteIntegral.setPossuiViseiraSolar(dto.possuiViseiraSolar());
+        return capaceteIntegral;
     }
 
 }

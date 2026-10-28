@@ -3,7 +3,6 @@ package br.unitins.tp1.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.unitins.tp1.validation.SemDuplicados;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
@@ -44,7 +43,6 @@ public record CapaceteAbertoDTO(
     @NotNull(message = "A especificacao deve ser informada.")
     @Valid
     EspecificacaoCapaceteDTO especificacao,
-    @SemDuplicados(message = "Os fornecedores nao podem se repetir.")
     List<@NotNull(message = "O fornecedor deve ser informado.") @Positive(message = "Fornecedor invalido.") Long> idFornecedores,
     @NotNull(message = "Deve ser informado se possui viseira.")
     Boolean possuiViseira) {

@@ -3,6 +3,7 @@ package br.unitins.tp1.model.converterjpa;
 import br.unitins.tp1.model.TipoFechamento;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import jakarta.ws.rs.BadRequestException;
 
 @Converter(autoApply = true)
 public class TipoFechamentoConverter implements AttributeConverter <TipoFechamento, Integer> {
@@ -20,7 +21,12 @@ public class TipoFechamentoConverter implements AttributeConverter <TipoFechamen
         if (id == null) {
             return null;
         }
-        return TipoFechamento.fromId(id);
+        try {
+            return TipoFechamento.fromId(id);
+        } catch (BadRequestException e) {
+            // valor invalido vindo do banco e erro de dados do servidor, nao da requisicao (400)
+            throw new IllegalStateException("Valor invalido no banco para TipoFechamento: " + id, e);
+        }
     }
     
 }

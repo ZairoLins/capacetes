@@ -6,6 +6,7 @@ import br.unitins.tp1.model.Fornecedor;
 import br.unitins.tp1.service.FornecedorService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -41,7 +42,7 @@ public class FornecedorResource {
 
     @GET
     @Path("/search")
-    public Response buscarPorRazaoSocial(@QueryParam("razaoSocial") String razaoSocial) {
+    public Response buscarPorRazaoSocial(@NotBlank(message = "O parametro de busca deve ser informado.") @QueryParam("razaoSocial") String razaoSocial) {
         return Response.ok(service.findByRazaoSocial(razaoSocial).stream().map(FornecedorResponseDTO::fromEntity).toList()).build();
     }
 

@@ -24,6 +24,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
     public Response toResponse(ConstraintViolationException exception) {
         List<Violation> violations = exception.getConstraintViolations().stream()
                 .map(v -> new Violation(fieldName(v), v.getMessage()))
+                .distinct()
                 .sorted(Comparator.comparing(Violation::field).thenComparing(Violation::message))
                 .toList();
 

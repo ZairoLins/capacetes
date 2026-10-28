@@ -4,12 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import br.unitins.tp1.model.CapaceteIntegral;
-import br.unitins.tp1.model.Categoria;
-import br.unitins.tp1.model.Cor;
-import br.unitins.tp1.model.EspecificacaoCapacete;
-import br.unitins.tp1.model.Fornecedor;
-import br.unitins.tp1.model.Marca;
-import br.unitins.tp1.model.Material;
 import br.unitins.tp1.model.Tamanho;
 
 public record CapaceteIntegralResponseDTO(
@@ -18,15 +12,14 @@ public record CapaceteIntegralResponseDTO(
     BigDecimal preco,
     Tamanho tamanho,
     Integer quantidadeEstoque,
-    Marca marca,
-    Categoria categoria,
-    Material material,
-    Cor cor,
-    EspecificacaoCapacete especificacao,
-    List<Fornecedor> fornecedores,
+    MarcaResponseDTO marca,
+    CategoriaResponseDTO categoria,
+    MaterialResponseDTO material,
+    CorResponseDTO cor,
+    EspecificacaoCapaceteResponseDTO especificacao,
+    List<FornecedorResponseDTO> fornecedores,
     Boolean possuiViseiraSolar
 ) {
-
     public static CapaceteIntegralResponseDTO fromEntity(CapaceteIntegral capaceteIntegral) {
         return new CapaceteIntegralResponseDTO(
             capaceteIntegral.getId(),
@@ -34,14 +27,15 @@ public record CapaceteIntegralResponseDTO(
             capaceteIntegral.getPreco(),
             capaceteIntegral.getTamanho(),
             capaceteIntegral.getQuantidadeEstoque(),
-            capaceteIntegral.getMarca(),
-            capaceteIntegral.getCategoria(),
-            capaceteIntegral.getMaterial(),
-            capaceteIntegral.getCor(),
-            capaceteIntegral.getEspecificacao(),
-            capaceteIntegral.getFornecedores(),
+            MarcaResponseDTO.fromEntity(capaceteIntegral.getMarca()),
+            CategoriaResponseDTO.fromEntity(capaceteIntegral.getCategoria()),
+            MaterialResponseDTO.fromEntity(capaceteIntegral.getMaterial()),
+            CorResponseDTO.fromEntity(capaceteIntegral.getCor()),
+            EspecificacaoCapaceteResponseDTO.fromEntity(capaceteIntegral.getEspecificacao()),
+            capaceteIntegral.getFornecedores() == null
+                ? List.of()
+                : capaceteIntegral.getFornecedores().stream().map(FornecedorResponseDTO::fromEntity).toList(),
             capaceteIntegral.getPossuiViseiraSolar()
         );
     }
-
 }

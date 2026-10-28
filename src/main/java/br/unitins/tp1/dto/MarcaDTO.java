@@ -1,6 +1,7 @@
 package br.unitins.tp1.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record MarcaDTO(
@@ -9,6 +10,7 @@ public record MarcaDTO(
     String nome,
     @NotBlank(message = "O pais de origem deve ser informado.")
     @Size(min = 2, max = 60, message = "O pais de origem deve ter entre 2 e 60 caracteres.")
+    @Pattern(regexp = "^[\\p{L} .'-]+$", message = "O pais de origem deve conter apenas letras.")
     String paisOrigem) {
-    
+
 }

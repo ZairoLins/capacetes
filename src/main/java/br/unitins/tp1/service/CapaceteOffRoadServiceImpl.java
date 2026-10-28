@@ -2,10 +2,8 @@ package br.unitins.tp1.service;
 
 import java.util.List;
 
-import br.unitins.tp1.exception.ConflictException;
 import br.unitins.tp1.model.CapaceteOffRoad;
 import br.unitins.tp1.repository.CapaceteOffRoadRepository;
-import br.unitins.tp1.repository.CapaceteRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,13 +15,9 @@ public class CapaceteOffRoadServiceImpl implements CapaceteOffRoadService {
     @Inject
     CapaceteOffRoadRepository repository;
 
-    @Inject
-    CapaceteRepository capaceteRepository;
-
     @Override
     @Transactional
     public CapaceteOffRoad create(CapaceteOffRoad capaceteOffRoad) {
-        validar(capaceteOffRoad, null);
         repository.persist(capaceteOffRoad);
         return capaceteOffRoad;
     }
@@ -35,7 +29,6 @@ public class CapaceteOffRoadServiceImpl implements CapaceteOffRoadService {
         if (novoCapacete == null) {
             throw new NotFoundException("Capacete nao encontrado.");
         }
-        validar(capaceteOffRoad, id);
         novoCapacete.setModelo(capaceteOffRoad.getModelo());
         novoCapacete.setPreco(capaceteOffRoad.getPreco());
         novoCapacete.setTamanho(capaceteOffRoad.getTamanho());
@@ -59,15 +52,6 @@ public class CapaceteOffRoadServiceImpl implements CapaceteOffRoadService {
     public void delete(Long id) {
         if (!repository.deleteById(id)) {
             throw new NotFoundException("Capacete nao encontrado.");
-        }
-    }
-
-    private void validar(CapaceteOffRoad capaceteOffRoad, Long id) {
-        if (capaceteRepository.existsProduto(capaceteOffRoad, id)) {
-            throw new ConflictException("modelo", "Ja existe um capacete " + capaceteOffRoad.getModelo()
-                    + " da marca " + capaceteOffRoad.getMarca().getNome()
-                    + " no tamanho " + capaceteOffRoad.getTamanho().getNome()
-                    + " e cor " + capaceteOffRoad.getCor().getNome() + ".");
         }
     }
 

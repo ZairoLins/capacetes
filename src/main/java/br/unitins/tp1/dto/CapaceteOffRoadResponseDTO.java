@@ -4,12 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import br.unitins.tp1.model.CapaceteOffRoad;
-import br.unitins.tp1.model.Categoria;
-import br.unitins.tp1.model.Cor;
-import br.unitins.tp1.model.EspecificacaoCapacete;
-import br.unitins.tp1.model.Fornecedor;
-import br.unitins.tp1.model.Marca;
-import br.unitins.tp1.model.Material;
 import br.unitins.tp1.model.Tamanho;
 
 public record CapaceteOffRoadResponseDTO(
@@ -18,15 +12,14 @@ public record CapaceteOffRoadResponseDTO(
     BigDecimal preco,
     Tamanho tamanho,
     Integer quantidadeEstoque,
-    Marca marca,
-    Categoria categoria,
-    Material material,
-    Cor cor,
-    EspecificacaoCapacete especificacao,
-    List<Fornecedor> fornecedores,
+    MarcaResponseDTO marca,
+    CategoriaResponseDTO categoria,
+    MaterialResponseDTO material,
+    CorResponseDTO cor,
+    EspecificacaoCapaceteResponseDTO especificacao,
+    List<FornecedorResponseDTO> fornecedores,
     Boolean possuiPala
 ) {
-
     public static CapaceteOffRoadResponseDTO fromEntity(CapaceteOffRoad capaceteOffRoad) {
         return new CapaceteOffRoadResponseDTO(
             capaceteOffRoad.getId(),
@@ -34,14 +27,15 @@ public record CapaceteOffRoadResponseDTO(
             capaceteOffRoad.getPreco(),
             capaceteOffRoad.getTamanho(),
             capaceteOffRoad.getQuantidadeEstoque(),
-            capaceteOffRoad.getMarca(),
-            capaceteOffRoad.getCategoria(),
-            capaceteOffRoad.getMaterial(),
-            capaceteOffRoad.getCor(),
-            capaceteOffRoad.getEspecificacao(),
-            capaceteOffRoad.getFornecedores(),
+            MarcaResponseDTO.fromEntity(capaceteOffRoad.getMarca()),
+            CategoriaResponseDTO.fromEntity(capaceteOffRoad.getCategoria()),
+            MaterialResponseDTO.fromEntity(capaceteOffRoad.getMaterial()),
+            CorResponseDTO.fromEntity(capaceteOffRoad.getCor()),
+            EspecificacaoCapaceteResponseDTO.fromEntity(capaceteOffRoad.getEspecificacao()),
+            capaceteOffRoad.getFornecedores() == null
+                ? List.of()
+                : capaceteOffRoad.getFornecedores().stream().map(FornecedorResponseDTO::fromEntity).toList(),
             capaceteOffRoad.getPossuiPala()
         );
     }
-
 }

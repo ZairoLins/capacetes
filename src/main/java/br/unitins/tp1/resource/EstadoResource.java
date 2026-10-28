@@ -7,6 +7,7 @@ import br.unitins.tp1.model.Regiao;
 import br.unitins.tp1.service.EstadoService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -42,7 +43,7 @@ public class EstadoResource {
 
     @GET
     @Path("/search")
-    public Response buscarPorNome(@QueryParam("nome") String nome) {
+    public Response buscarPorNome(@NotBlank(message = "O parametro de busca deve ser informado.") @QueryParam("nome") String nome) {
         return Response.ok(service.findByNome(nome).stream().map(EstadoResponseDTO::fromEntity).toList()).build();
     }
 

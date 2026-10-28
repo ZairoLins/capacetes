@@ -2,10 +2,8 @@ package br.unitins.tp1.service;
 
 import java.util.List;
 
-import br.unitins.tp1.exception.ConflictException;
 import br.unitins.tp1.model.CapaceteIntegral;
 import br.unitins.tp1.repository.CapaceteIntegralRepository;
-import br.unitins.tp1.repository.CapaceteRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,13 +15,9 @@ public class CapaceteIntegralServiceImpl implements CapaceteIntegralService {
     @Inject
     CapaceteIntegralRepository repository;
 
-    @Inject
-    CapaceteRepository capaceteRepository;
-
     @Override
     @Transactional
     public CapaceteIntegral create(CapaceteIntegral capaceteIntegral) {
-        validar(capaceteIntegral, null);
         repository.persist(capaceteIntegral);
         return capaceteIntegral;
     }
@@ -35,7 +29,6 @@ public class CapaceteIntegralServiceImpl implements CapaceteIntegralService {
         if (novoCapacete == null) {
             throw new NotFoundException("Capacete nao encontrado.");
         }
-        validar(capaceteIntegral, id);
         novoCapacete.setModelo(capaceteIntegral.getModelo());
         novoCapacete.setPreco(capaceteIntegral.getPreco());
         novoCapacete.setTamanho(capaceteIntegral.getTamanho());
@@ -59,15 +52,6 @@ public class CapaceteIntegralServiceImpl implements CapaceteIntegralService {
     public void delete(Long id) {
         if (!repository.deleteById(id)) {
             throw new NotFoundException("Capacete nao encontrado.");
-        }
-    }
-
-    private void validar(CapaceteIntegral capaceteIntegral, Long id) {
-        if (capaceteRepository.existsProduto(capaceteIntegral, id)) {
-            throw new ConflictException("modelo", "Ja existe um capacete " + capaceteIntegral.getModelo()
-                    + " da marca " + capaceteIntegral.getMarca().getNome()
-                    + " no tamanho " + capaceteIntegral.getTamanho().getNome()
-                    + " e cor " + capaceteIntegral.getCor().getNome() + ".");
         }
     }
 

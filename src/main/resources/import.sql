@@ -8,7 +8,7 @@
 insert into estado (nome, sigla, idregiao) values('Tocantins', 'TO', 3);
 insert into estado (nome, sigla, idregiao) values('Goias', 'GO', 1);
 insert into estado (nome, sigla, idregiao) values('Rio de Janeiro', 'RJ', 4);
-insert into estado (nome, sigla) values('Sao Paulo', 'SP');
+insert into estado (nome, sigla, idregiao) values('Sao Paulo', 'SP', 4);
 
 insert into marca (nome, paisorigem) values('LS2', 'Espanha');
 insert into marca (nome, paisorigem) values('Shoei', 'Japao');

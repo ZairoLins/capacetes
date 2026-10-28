@@ -9,6 +9,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class CapaceteAbertoRepository implements PanacheRepository<CapaceteAberto> {
     public List<CapaceteAberto> findByModelo(String modelo) {
-        return find("upper(modelo) LIKE upper(?1)", "%" + modelo + "%").list();
+        return find("upper(modelo) LIKE upper(?1) ESCAPE '!'", TermoBusca.contendo(modelo)).list();
     }
 }
